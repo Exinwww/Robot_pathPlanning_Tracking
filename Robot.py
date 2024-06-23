@@ -48,7 +48,6 @@ class ROBOT:
         right = v + self.b * omega / 2
 
         return left, right
-    
     def PID_control(self, path):
         """
         PID控制算法

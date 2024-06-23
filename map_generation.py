@@ -93,10 +93,16 @@ class Map:
             if self.map[y, x] == 0:
                 continue
             yield x, y
-
+    def is_Block(self, x:int, y:int):
+        if x < 0 or y < 0 or x >= self.width or y >= self.height:
+            return False
+        x = int(x)
+        y = int(y)
+        return self.map[y, x] == 0
     def set_SG(self, start, goal):
         self.start = start
         self.goal = goal
+
 if __name__ == '__main__':
     map = Map()
     map.show_map_shape()
