@@ -22,7 +22,7 @@ class Astar_Planner(Map):
         计算移动代价
         """
         return self.manhattan_distance(a, b)
-    def A_start(self):
+    def plan(self):
         self.g[self.start] = 0.0
         self.PARENT[self.start] = self.start
         heapq.heappush(self.OPEN, (0.0, self.start))
@@ -126,14 +126,14 @@ class RRT_Planner(Map):
             if self.is_Block(x[i], y[i]):
                 return True
         return False
-    def extract_path(self):
+    def backtrace(self):
         path = []
         node = self.goal_node
         while node is not None:
             path.append((node.x, node.y))
             node = node.parent
         return path[::-1]
-    def RRT(self, max_iter=5000):
+    def plan(self, max_iter=5000):
         """RRT的实现"""
         start_node = Node(*self.start)
         goal_node = Node(*self.goal)
@@ -152,7 +152,7 @@ class RRT_Planner(Map):
                     print('Find the goal')
                     break
     def path_subdivision(self, dt=0.1):
-        path = self.extract_path()
+        path = self.backtrace()
         new_path = []
         for i in range(len(path)-1):
             distance = self.euler_distance(path[i], path[i+1])
@@ -164,7 +164,7 @@ class RRT_Planner(Map):
         return new_path
     def draw_path(self):
         """绘制路径"""
-        path = self.extract_path()
+        path = self.backtrace()
         print(f'path length: {len(path)}')
         path_x = [point[0] for point in path]
         path_y = [point[1] for point in path]
@@ -176,7 +176,7 @@ class RRT_Planner(Map):
         plt.gca().axes.get_yaxis().set_ticks([])
         plt.title('Path Planning')
         plt.show()
-
+    
 if __name__ == '__main__':
     # path_planner = Astar_Planner()
     # path_planner.set_start_end()
@@ -185,5 +185,5 @@ if __name__ == '__main__':
 
     rrt_planner = RRT_Planner()
     rrt_planner.set_start_end()
-    rrt_planner.RRT()
+    rrt_planner.plan()
     rrt_planner.draw_path()
