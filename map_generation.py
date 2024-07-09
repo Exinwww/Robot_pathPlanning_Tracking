@@ -29,7 +29,7 @@ class Map:
         print('Please click the start point on the map')
         def onclick(event):
             y,x = int(event.xdata), int(event.ydata)
-            print(f"Clicked at: ({y}, {x})")
+            # print(f"Clicked at: ({y}, {x})")
             self.start = (y, x)
             fig.canvas.mpl_disconnect(cid)
             plt.close()
@@ -47,7 +47,7 @@ class Map:
         print('Please click the end point on the map')
         def onclick(event):
             y, x = int(event.xdata), int(event.ydata)
-            print(f"Clicked at: ({y}, {x})")
+            # print(f"Clicked at: ({y}, {x})")
             self.goal = (y, x)
             fig.canvas.mpl_disconnect(cid)
             plt.close()
@@ -63,6 +63,7 @@ class Map:
         # 检查起点是否在地图内
         self.get_End()
         # 检查终点是否在地图内
+        print(f'Start: {self.start}, Goal: {self.goal}')
     
     def showMap_with_Strat_End(self):
         plt.imshow(self.image)
@@ -100,8 +101,10 @@ class Map:
         y = int(y)
         return self.map[y, x] == 0
     def set_SG(self, start, goal):
+        """程序运行前即指定起点和终点，保证前后两次实验的一致性"""
         self.start = start
         self.goal = goal
+        print(f'Start: {self.start}, Goal: {self.goal}')
 
 if __name__ == '__main__':
     map = Map()

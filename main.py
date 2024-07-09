@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from path_visualization import Visualizer
 import numpy as np
 import argparse
+from fastdtw import fastdtw
 
 # 设置命令行参数解析
 parser = argparse.ArgumentParser(description='Path Planning and Tracking')
@@ -107,6 +108,21 @@ def test():
     visualizer = Visualizer(target_path=np.array(path), trac_path=np.array([x_traj, y_traj]).T, image=planner.image)
     visualizer.show()
 
+# 计算轨迹跟踪的误差
+def evalution(target_path, traj_path):
+    # 计算DTW距离矩阵
+    distance, path = fastdtw(target_path, traj_path)
+    # 计算误差
+    errors = []
+    for (i, j) in path:
+        point_target = target_path[i]
+        point_actual = traj_path[j]
+        error = np.linalg.norm(point_target - point_actual)
+        errors.append(error)
+    mean_error = np.mean(errors)
+    print("\nMean DTW error:", mean_error)
+    return mean_error
+
 if __name__ == '__main__':
     map_path = args.map
     # 设置路径规划器
@@ -119,6 +135,8 @@ if __name__ == '__main__':
     else:
         raise ValueError('Planner not supported')
     planner.set_start_end() # 设置起终点
+    # planner.set_SG((3, 4), (29, 47)) # 程序运行前设置起终点 for map
+    # planner.set_SG((3, 54), (95, 28)) # 程序运行前设置起终点 for map2
     planner.plan() # 规划路径
     path = planner.backtrace() # 获取规划路径
     path = planner.path_subdivision(dt=args.dt) # 对规划路径进行平滑处理
@@ -139,6 +157,13 @@ if __name__ == '__main__':
     x_traj, y_traj = robot.get_traj()
     print('Get the trajectory')
 
+    # 计算轨迹跟踪的误差
+    traj_path = [ [x_traj[i], y_traj[i]] for i in range(len(x_traj))]
+    evalution(np.array(path), np.array(traj_path))
+    # 输出时间、访问节点数统计量
+    print(f'Planning time: {planner.plan_time:.2f}s')
+    print(f'Visited nodes: {planner.node_counter}')
+
     # 可视化
-    visualizer = Visualizer(target_path=np.array(path), trac_path=np.array([x_traj, y_traj]).T, image=planner.image)
+    visualizer = Visualizer(target_path=np.array(path), trac_path=np.array(traj_path), image=planner.image)
     visualizer.show()

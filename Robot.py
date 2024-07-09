@@ -91,7 +91,7 @@ class ROBOT:
         for i in range(len(path) - 1):
             start = path[i]
             end = path[i+1]
-            if np.hypot(start[0] - self.x, start[1] - self.y) <=self.look_ahead_distance < \
+            if np.hypot(start[0] - self.x, start[1] - self.y) <= self.look_ahead_distance < \
                 np.hypot(end[0] - self.x, end[1] - self.y):
                 return end
         return path[-1] # 路径点已经用完，返回最后一个点
@@ -112,7 +112,7 @@ class ROBOT:
             self.x_traj.append(self.x)
             self.y_traj.append(self.y)
             # 检查是否到达路径终点
-            if np.hypot(self.x - path[-1][0], self.y - path[-1][1]) < 0.2:
+            if np.hypot(self.x - path[-1][0], self.y - path[-1][1]) < 0.5:
                 print('Goal Reached')
                 break
     def get_traj(self):

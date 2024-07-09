@@ -3,6 +3,7 @@ import math
 import heapq
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 class Astar_Planner(Map):
     def __init__(self, image_path='./map_image/map.png', threshold=128):
@@ -23,9 +24,13 @@ class Astar_Planner(Map):
         """
         return self.manhattan_distance(a, b)
     def plan(self):
+        # 获取当前时间
+        start_time = time.time()
+        # 初始化
         self.g[self.start] = 0.0
         self.PARENT[self.start] = self.start
         heapq.heappush(self.OPEN, (0.0, self.start))
+        self.node_counter = 1 # 访问节点计数器
         # A*算法
         cs = ['-', '\\', '|', '/']
         counter = 0
@@ -46,7 +51,12 @@ class Astar_Planner(Map):
                     self.g[neighbor] = new_g
                     f = new_g + self.heuristic(neighbor)
                     heapq.heappush(self.OPEN, (f, neighbor))
+                    self.node_counter += 1 # 记录访问节点数
                     self.PARENT[neighbor] = current
+        
+        # 获取结束时间
+        end_time = time.time()
+        self.plan_time = end_time - start_time
     
     # 回溯路径
     def backtrace(self):
@@ -119,7 +129,7 @@ class RRT_Planner(Map):
     def line_is_Block(self, from_node, to_node):
         """判断两个点之间是否有障碍物"""
         distance = self.euler_distance((from_node.x, from_node.y), (to_node.x, to_node.y))
-        num = math.ceil(distance)
+        num = math.ceil(distance) * 10
         x = np.linspace(from_node.x, to_node.x, num)
         y = np.linspace(from_node.y, to_node.y, num)
         for i in range(num):
@@ -133,17 +143,23 @@ class RRT_Planner(Map):
             path.append((node.x, node.y))
             node = node.parent
         return path[::-1]
-    def plan(self, max_iter=5000):
+    def plan(self, max_iter=500000):
         """RRT的实现"""
+        # 获取当前时间
+        start_time = time.time()
+        self.node_counter = 0 # 访问节点计数器
+        # 初始化
         start_node = Node(*self.start)
         goal_node = Node(*self.goal)
         self.tree.append(start_node)
-
+        cs = ['-', '\\', '|', '/']
+            
         for _ in range(max_iter):
             random_node = self.get_random_node()
             nearest = self.nearest_node(random_node)
             new_node = self.steer(nearest, random_node)
-
+            self.node_counter += 1 # 记录访问节点数
+            print(f'In RRT {cs[self.node_counter%4]}', end='\r') # 进度条
             if not self.is_Block(new_node.x, new_node.y) and not self.line_is_Block(nearest, new_node):
                 self.tree.append(new_node)
                 if self.is_goal(new_node):
@@ -151,6 +167,10 @@ class RRT_Planner(Map):
                     self.goal_node = goal_node
                     print('Find the goal')
                     break
+
+        # 获取结束时间
+        end_time = time.time()
+        self.plan_time = end_time - start_time
     def path_subdivision(self, dt=0.1):
         path = self.backtrace()
         new_path = []
