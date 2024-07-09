@@ -90,7 +90,7 @@ class Node:
         self.parent = None
 
 class RRT_Planner(Map):
-    def __init__(self, image_path='./map_image/map2.png', threshold=128, step_size=2.0):
+    def __init__(self, image_path='./map_image/map.png', threshold=128, step_size=2.0):
         super().__init__(image_path, threshold)
         self.tree = []
         self.goal_node = None

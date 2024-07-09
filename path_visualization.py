@@ -26,8 +26,8 @@ class Visualizer:
         self.ax2.invert_yaxis()  # 反转y轴，使y轴从上到下递增        
         self.ax2.set_xticks([])
         self.ax2.set_yticks([])
-        self.ax2.scatter(self.trac_path[0][0], self.trac_path[0][1], c='black', s=10)
-        self.ax2.scatter(self.trac_path[-1][0], self.trac_path[-1][1], c='green', s=10)
+        self.ax2.scatter(self.target_path[0][0], self.target_path[0][1], c='black', s=10)
+        self.ax2.scatter(self.target_path[-1][0], self.target_path[-1][1], c='green', s=10)
         self.line1, = self.ax1.plot([], [], 'r-')
         self.line2, = self.ax2.plot([], [], 'b-')
         self.line3, = self.ax2.plot([], [], 'r-')
@@ -38,7 +38,6 @@ class Visualizer:
         self.line2.set_data([], [])
         self.line3.set_data([], [])
         return self.line1, self.line3, self.line2
-
     def update(self, frame):
         if frame < len(self.target_path):
             x = [point[0] for point in self.target_path[:frame]]
@@ -52,7 +51,8 @@ class Visualizer:
             x3 = [point[0] for point in self.target_path]
             y3 = [point[1] for point in self.target_path]
             self.line3.set_data(x3, y3)
-            return self.line3, self.line2
+            self.line1.set_data(x3, y3)
+            return self.line1, self.line3, self.line2
     
     def show(self):
         plt.tight_layout()

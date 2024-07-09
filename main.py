@@ -6,6 +6,7 @@ from path_visualization import Visualizer
 import numpy as np
 
 if __name__ == '__main__':
+    map_path = './map_image/map2.png'
     dt = 0.5 # 设置时间间隔
     # 路径规划
     # planner = Astar_Planner(image_path='./map_image/map2.png')
@@ -15,7 +16,7 @@ if __name__ == '__main__':
     # path = planner.backtrace()
     # path = planner.path_subdivision(dt=dt)
 
-    planner = RRT_Planner()
+    planner = RRT_Planner(image_path=map_path)
     planner.set_start_end()
     planner.RRT()
     path = planner.extract_path()
@@ -26,7 +27,8 @@ if __name__ == '__main__':
     robot = ROBOT(dt=dt)
     robot.set_state(*planner.start, 0.0)
     robot.set_pid_param(kp=2.0, ki=0.1, kd=0.1) # kp若为1.0，会出现问题; best:2.0,0.5,0.1
-    robot.PID_control(path)
+    # robot.PID_control(path)
+    robot.pure_pursuit_control(path)
 
     x_traj, y_traj = robot.get_traj()
     print(f'x_traj: {len(x_traj)}, y_traj: {len(y_traj)}')
