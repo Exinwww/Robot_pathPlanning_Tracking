@@ -91,7 +91,7 @@ class ROBOT:
         for i in range(len(path) - 1):
             start = path[i]
             end = path[i+1]
-            if np.hypot(start[0] - self.x, start[1] - self.y) <= self.look_ahead_distance < \
+            if np.hypot(start[0] - self.x, start[1] - self.y) <= self.look_ahead_distance <= \
                 np.hypot(end[0] - self.x, end[1] - self.y):
                 return end
         return path[-1] # 路径点已经用完，返回最后一个点

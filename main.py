@@ -1,7 +1,5 @@
 from Robot import ROBOT
 from path_plan import Astar_Planner, RRT_Planner
-from map_generation import Map
-import matplotlib.pyplot as plt
 from path_visualization import Visualizer
 import numpy as np
 import argparse
@@ -167,3 +165,30 @@ if __name__ == '__main__':
     # 可视化
     visualizer = Visualizer(target_path=np.array(path), trac_path=np.array(traj_path), image=planner.image)
     visualizer.show()
+    
+    # 用于在使用RRT规划器时，对PID和Pure Pursuit进行比较（因为RRT具有随机性，所以每次规划结果不同）
+    # if args.planner == 'rrt':
+    #     new_robot = None
+    #     if args.traj != 'pid':
+    #         new_robot = ROBOT(b=args.b, dt=args.dt)
+    #         new_robot.set_state(*planner.start, 0.0)
+    #         new_robot.set_pid_param(kv=args.kv, kp=args.kp, ki=args.ki, kd=args.kd)
+    #         new_robot.PID_control(path)
+    #     else:
+    #         new_robot = ROBOT(b=args.b, dt=args.dt)
+    #         new_robot.set_state(*planner.start, 0.0)
+    #         new_robot.set_pure_param(args.look_ahead_distance)
+    #         new_robot.pure_pursuit_control(path)
+        
+    #     x_traj, y_traj = new_robot.get_traj()
+
+    #     # 计算轨迹跟踪的误差
+    #     traj_path = [ [x_traj[i], y_traj[i]] for i in range(len(x_traj))]
+    #     evalution(np.array(path), np.array(traj_path))
+    #     # 输出时间、访问节点数统计量
+    #     print(f'Planning time: {planner.plan_time:.2f}s')
+    #     print(f'Visited nodes: {planner.node_counter}')
+
+    #     # 可视化
+    #     visualizer = Visualizer(target_path=np.array(path), trac_path=np.array(traj_path), image=planner.image)
+    #     visualizer.show()

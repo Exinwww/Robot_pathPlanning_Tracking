@@ -7,7 +7,7 @@ class Visualizer:
         self.target_path = target_path
         self.trac_path = trac_path
         self.background = image
-        self.fig, (self.ax1, self.ax2) = plt.subplots(1, 2, figsize=(10, 4))
+        self.fig, (self.ax1, self.ax2) = plt.subplots(1, 2, figsize=(8, 4))
         
         self.ax1.imshow(self.background)
         self.ax1.set_title('Planned Path')
@@ -16,8 +16,8 @@ class Visualizer:
         self.ax1.invert_yaxis()  # 反转y轴，使y轴从上到下递增         
         self.ax1.set_xticks([])
         self.ax1.set_yticks([])
-        self.ax1.scatter(self.target_path[0][0], self.target_path[0][1], c='black', s=10)
-        self.ax1.scatter(self.target_path[-1][0], self.target_path[-1][1], c='green', s=10)
+        self.ax1.scatter(self.target_path[0][0], self.target_path[0][1], c='black', s=10, label='Start')
+        self.ax1.scatter(self.target_path[-1][0], self.target_path[-1][1], c='green', s=10, label='Goal')
 
         self.ax2.imshow(self.background)
         self.ax2.set_title('Tracking Path')
@@ -26,11 +26,13 @@ class Visualizer:
         self.ax2.invert_yaxis()  # 反转y轴，使y轴从上到下递增        
         self.ax2.set_xticks([])
         self.ax2.set_yticks([])
-        self.ax2.scatter(self.target_path[0][0], self.target_path[0][1], c='black', s=10)
-        self.ax2.scatter(self.target_path[-1][0], self.target_path[-1][1], c='green', s=10)
-        self.line1, = self.ax1.plot([], [], 'r-')
-        self.line2, = self.ax2.plot([], [], 'b-')
-        self.line3, = self.ax2.plot([], [], 'r-')
+        self.ax2.scatter(self.target_path[0][0], self.target_path[0][1], c='black', s=10, label='Start')
+        self.ax2.scatter(self.target_path[-1][0], self.target_path[-1][1], c='green', s=10, label='Goal')
+        self.line1, = self.ax1.plot([], [], 'r-', label='Planned Path')
+        self.line2, = self.ax2.plot([], [], 'b-', label='Tracking Path')
+        self.line3, = self.ax2.plot([], [], 'r-', label='Planned Path')
+        self.ax1.legend()
+        self.ax2.legend()
         self.ani_left = FuncAnimation(self.fig, self.update, frames=len(self.target_path)+len(self.trac_path), init_func=self.init, blit=True, interval=50, repeat=False)
         
     def init(self):
